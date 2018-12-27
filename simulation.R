@@ -140,27 +140,28 @@ cum.se = function(theta, M, G, N, N2, p){
   var.theta = sum(var.theta)
 }
 
-cens.bias_Markov = function(data, M,alpha, l, functions){
+cens.bias_Markov = function(data, M, alpha, l, functions){
   xround_11 = functions$round_11
   xP_prime2 = functions$P_prime2
   xP2 = functions$P2
   xround_1_nh = functions$round_1_nh
   xP_nh = functions$P_nh
   xP_prime_nh = functions$P_prime_nh
+  #data = subset(data, round <= cens2)
   theta = matrix(data = 0, nrow=M, ncol=M)
   # compute theta[h, j] for lower triangle
   cartesianProd = function(a){
     if(a==1){
       if(l==1){
-        return(data.frame("i1"=1))
-      } else{ stop("not possible")}
+        return(data.frame('i1'=1))
+      } else{ stop('not possible')}
     } else{
       df = expand.grid(rep(list(c(0,1)), a-1))
-      names(df) = paste0("i", 1:(a-1))
+      names(df) = paste0('i', 1:(a-1))
       df = subset(df, rowSums(df)==l-1)
-      df[, paste0("i",a )] = 1
+      df[, paste0('i',a )] = 1
       return(df)}}
-  # j = 1, h= 1:M creates the first column
+  ########################## j = 1, h= 1:M creates the first column
   for (j in l:M){
     df = cartesianProd(j)
     for (h in j:M){
@@ -172,7 +173,7 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
             if (k+1 == h){
               return (xP_prime2(h, k+1)[x[k]+1, x[k+1]+1])
             } else{
-              return (xP_prime2(h, k+1)[x[k]+1, x[k+1]+1])
+              return (xP2(h, k+1)[x[k]+1, x[k+1]+1])
             }
           }))}
         return (C)
@@ -186,7 +187,8 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
     B[[h]] = matrix(data=0, nrow=M, ncol=min(l-1, h)+1)  
     for (b in h:M)
       for (c in 0:min(l-1, h))
-        B[[h]][b, c+1] = nrow(subset(data, S==b & get(paste0("n",h))==c))/nrow(data)
+        B[[h]][b, c+1] = nrow(subset(data, S==b & get(paste0('n',h))==c))/nrow(data)
+      
       A[[h]] = array(data=0, dim=c(M+1, M, 1+min(l-1, h)))
       # case I: a<=b
       for (b in max(l, h+1):M)
@@ -201,7 +203,7 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
                   if (k+1 == b){
                     return (xP_prime_nh(b, k+1, h, c)[x[k]+1, x[k+1]+1])
                   } else{
-                    return (xP_prime_nh(b, k+1, h, c)[x[k]+1, x[k+1]+1])
+                    return (xP_nh(b, k+1, h, c)[x[k]+1, x[k+1]+1])
                   }  
                 }))}
               return (ifelse(is.nan(C), 0, C))
@@ -209,8 +211,29 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
             A[[h]][a, b, c+1] = sum(df$term, na.rm = T)
           }
       # case II: a > b = M
-      for (c in 0:min(l-1, h))
-        A[[h]][M+1, M, c+1] = 1 - sum(sapply(l:M, function(jj) {A[[h]][jj, M, c+1]}))
+      for (ii in 1:l)
+        for (c in 0:min(l-1, h)){
+          if (ii<l){
+            df = expand.grid(rep(list(c(0,1)), M))
+            names(df) = paste0('i', 1:M)
+            df = subset(df, rowSums(df==1)==l-ii)
+            df$term = apply(df,1 , FUN = function(x){
+              x = as.numeric(x)
+              C = xround_1_nh(x[1], M, h, c)      
+              C = C*prod(sapply(1:(M-1), function(k){
+                if (k+1 == M){
+                  return (xP_prime_nh(M, k+1, h, c)[x[k]+1, x[k+1]+1])
+                } else{
+                  return (xP_nh(M, k+1, h, c)[x[k]+1, x[k+1]+1])
+                }  
+              }))
+              return(ifelse(is.nan(C), 0, C))
+            })
+            A[[h]][M+ii, M, c+1] = sum(df$term, na.rm = T)
+          } else{
+            A[[h]][M+1, M, c+1] = 1 - sum(sapply(l:(M+1-1), function(jj) {A[[h]][jj, M, c+1]}))
+          }
+        }
       
       # case III: a >b & b < M. Also in the final round we calculate A[[h]][a,h,c+1] 
       for (b in (M-1):h)
@@ -230,18 +253,20 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
   for (h in 1:(M-1))
     for (j in max(h+1, l):M)
       theta[h, j] = sum(A[[h]][j,h, ]*B[[h]][h, ])*nrow(data)/nrow(subset(data, S==h))
+  
   p1 = summary(factor(data$S[!duplicated(data$StudyID_c)],levels=c(1:M)))/length(data$S[!duplicated(data$StudyID_c)]) 
   D = apply(theta,1,sum)
   D = as.matrix(D, drop=F)
   risk = p1%*%D
-  data$RESINIT_C = ifelse(data[,paste0("fp",l)]==data$round, 1,0)
+  risk = as.numeric(risk)
+  data$RESINIT_C = ifelse(data$fp2==data$round, 1,0)
   N1 = table(data$S[data$RESINIT_C==1], data$round[data$RESINIT_C==1])
   N2 = matrix(0, ncol=M, nrow=M)
   N2[1:nrow(N1), 1:ncol(N1)]=N1
-  N = table(data$S,data$round)
+  N <- table(data$S,data$round)
   varp = cum.se(theta, M, alpha, N, N2, p1)
   se = sqrt(varp)
-  return (list(risk=risk, se = se, theta=theta))
+  return (list(risk=risk, se = se))
 }
 
 #matrices needed for discrete survival model
