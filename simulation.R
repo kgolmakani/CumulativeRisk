@@ -211,29 +211,8 @@ cens.bias_Markov = function(data, M, alpha, l, functions){
             A[[h]][a, b, c+1] = sum(df$term, na.rm = T)
           }
       # case II: a > b = M
-      for (ii in 1:l)
-        for (c in 0:min(l-1, h)){
-          if (ii<l){
-            df = expand.grid(rep(list(c(0,1)), M))
-            names(df) = paste0('i', 1:M)
-            df = subset(df, rowSums(df==1)==l-ii)
-            df$term = apply(df,1 , FUN = function(x){
-              x = as.numeric(x)
-              C = xround_1_nh(x[1], M, h, c)      
-              C = C*prod(sapply(1:(M-1), function(k){
-                if (k+1 == M){
-                  return (xP_prime_nh(M, k+1, h, c)[x[k]+1, x[k+1]+1])
-                } else{
-                  return (xP_nh(M, k+1, h, c)[x[k]+1, x[k+1]+1])
-                }  
-              }))
-              return(ifelse(is.nan(C), 0, C))
-            })
-            A[[h]][M+ii, M, c+1] = sum(df$term, na.rm = T)
-          } else{
-            A[[h]][M+1, M, c+1] = 1 - sum(sapply(l:(M+1-1), function(jj) {A[[h]][jj, M, c+1]}))
-          }
-        }
+       for (c in 0:min(l-1, h))
+    A[[h]][M+1, M, c+1] = 1 - sum(sapply(l:M, function(jj) {A[[h]][jj, M, c+1]}))
       
       # case III: a >b & b < M. Also in the final round we calculate A[[h]][a,h,c+1] 
       for (b in (M-1):h)
