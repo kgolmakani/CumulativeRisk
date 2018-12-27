@@ -833,7 +833,7 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
             if (k+1 == h){
               return (xP_prime2(h, k+1)[x[k]+1, x[k+1]+1])
             } else{
-              return (xP_prime2(h, k+1)[x[k]+1, x[k+1]+1])
+             return (xP2(h, k+1)[x[k]+1, x[k+1]+1])
             }
           }))}
         return (C)
@@ -862,7 +862,7 @@ cens.bias_Markov = function(data, M,alpha, l, functions){
                   if (k+1 == b){
                     return (xP_prime_nh(b, k+1, h, c)[x[k]+1, x[k+1]+1])
                   } else{
-                    return (xP_prime_nh(b, k+1, h, c)[x[k]+1, x[k+1]+1])
+                   return (xP_nh(b, k+1, h, c)[x[k]+1, x[k+1]+1])
                   }  
                 }))}
               return (ifelse(is.nan(C), 0, C))
