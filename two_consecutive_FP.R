@@ -145,37 +145,13 @@ MfpRisk_sim_real = function(Nsim, M, p, Nsubj,age,fm,fd,rc,int){
   return(list(cumr = mean(out1), qtls = quantile(out1, probs = c(0,0.25, 0.75, 0.975, 1),  na.rm = TRUE)))
 }
 
-a1 = MfpRisk_sim_real(500,10, 0.2, 1000, 40,1,3,2,1)#high risk, annual screener
-# $cumr
-# [1] 0.244038
-# 
-# $qtls
-# 0%     25%     75%   97.5%    100% 
-# 0.20600 0.23500 0.25325 0.27105 0.28400 
-a2 = MfpRisk_sim_real(500,10, 0.2, 1000, 40,1,3,2,2)#high risk, biennial screener
-# $cumr
-# [1] 0.13342
-# 
-# $qtls
-# 0%   25%   75% 97.5%  100% 
-# 0.105 0.125 0.141 0.156 0.169 
+a1 = MfpRisk_sim_real(5000,10, 0.2, 1000, 40,1,3,2,1)#high risk, annual screener
 
-a3 = MfpRisk_sim_real(500,10, 0.2, 1000, 50,0,1,3,1) #low risk, annual screener
+a2 = MfpRisk_sim_real(5000,10, 0.2, 1000, 40,1,3,2,2)#high risk, biennial screener
 
-# $cumr
-# [1] 0.042294
-# 
-# $qtls
-# 0%      25%      75%    97.5%     100% 
-# 0.022000 0.037750 0.046000 0.055525 0.067000 
-a4 =MfpRisk_sim_real(500,10, 0.2, 1000, 50,0,1,3,2) #low risk, biennial screeners
-# cumr
-# [1] 0.023478
-# 
-# $qtls
-# 0%   25%   75% 97.5%  100% 
-# 0.006 0.020 0.027 0.033 0.041 
+a3 = MfpRisk_sim_real(5000,10, 0.2, 1000, 50,0,1,3,1) #low risk, annual screener
 
+a4 =MfpRisk_sim_real(5000,10, 0.2, 1000, 50,0,1,3,2) #low risk, biennial screeners
 
 ####################################################################################
 
@@ -291,36 +267,14 @@ MfpRisk_sim_real = function(Nsim, M, p, Nsubj,age,fm,fd,rc,int){
   return(list(cumr = mean(out1),qtls = quantile(out1, probs = c(0,0.25, 0.75, 0.975, 1),  na.rm = TRUE)))
 }
 
-b1 = MfpRisk_sim_real(500,10, 0.2, 1000, 40,1,3,2,1)#high risk, annual screener
+b1 = MfpRisk_sim_real(5000,10, 0.2, 50000, 40,1,3,2,1)#high risk, annual screener
 
-# $cumr
-# [1] 0.297386
-# 
-# $qtls
-# 0%      25%      75%    97.5%     100% 
-# 0.252000 0.287750 0.307000 0.326525 0.346000 
-b2 = MfpRisk_sim_real(500,10, 0.2, 1000, 40,1,3,2,2)#high risk, biennial screener
-# $cumr
-# [1] 0.148866
-# 
-# $qtls
-# 0%   25%   75% 97.5%  100% 
-# 0.119 0.142 0.156 0.170 0.188 
-b3 = MfpRisk_sim_real(500,10, 0.2, 1000, 50,0,1,3,1) #low risk, annual screener
-# $cumr
-# [1] 0.054854
-# 
-# $qtls
-# 0%      25%      75%    97.5%     100% 
-# 0.027000 0.049000 0.060000 0.069525 0.081000 
-b4 =MfpRisk_sim_real(500,10, 0.2, 1000, 50,0,1,3,2) #low risk, biennial screeners
+b2 = MfpRisk_sim_real(500,10, 0.2, 50000, 40,1,3,2,2)#high risk, biennial screener
 
-# $cumr
-# [1] 0.02716
-# 
-# $qtls
-# 0%      25%      75%    97.5%     100% 
-# 0.013000 0.023750 0.031000 0.037525 0.042000 
+b3 = MfpRisk_sim_real(500,10, 0.2, 50000, 50,0,1,3,1) #low risk, annual screener
+
+b4 =MfpRisk_sim_real(500,10, 0.2, 50000, 50,0,1,3,2) #low risk, biennial screeners
+
 ##############################################################################################
 #probability of two consecutive FP based on discrete survival model
 
@@ -441,40 +395,11 @@ MfpRisk_sim_real = function(Nsim, M, p, Nsubj,age,fm,fd,rc,int){
   return(list(cumr = mean(out1), qtls = quantile(out1, probs = c(0,0.25, 0.75, 0.975, 1),  na.rm = TRUE)))
 }
 
-c1 = MfpRisk_sim_real(500,10, 0.2, 1000, 40,1,3,2,1)#high risk, annual screener
-# $cumr
-# [1] 0.197014
-# 
-# $qtls
-# 0%      25%      75%    97.5%     100% 
-# 0.159000 0.188000 0.207000 0.220525 0.242000 
+c1 = MfpRisk_sim_real(5000,10, 0.2, 50000, 40,1,3,2,1)#high risk, annual screener
 
+c2 = MfpRisk_sim_real(5000,10, 0.2, 50000, 40,1,3,2,2)#high risk, biennial screener
 
-c2 = MfpRisk_sim_real(500,10, 0.2, 1000, 40,1,3,2,2)#high risk, biennial screener
+c3 = MfpRisk_sim_real(5000,10, 0.2, 50000, 50,0,1,3,1) #low risk, annual screener
 
-# $cumr
-# [1] 0.117596
-# 
-# $qtls
-# 0%   25%   75% 97.5%  100% 
-# 0.093 0.111 0.124 0.138 0.155 
-
-
-c3 = MfpRisk_sim_real(500,10, 0.2, 1000, 50,0,1,3,1) #low risk, annual screener
-# $cumr
-# [1] 0.03656
-# 
-# $qtls
-# 0%     25%     75%   97.5%    100% 
-# 0.02100 0.03300 0.04025 0.04800 0.05900 
-
-
-c4 =MfpRisk_sim_real(500,10, 0.2, 1000, 50,0,1,3,2) #low risk, biennial screeners
-# $cumr
-# [1] 0.023728
-# 
-# $qtls
-# 0%   25%   75% 97.5%  100% 
-# 0.013 0.021 0.027 0.033 0.039 
-# 
+c4 =MfpRisk_sim_real(5000,10, 0.2, 50000, 50,0,1,3,2) #low risk, biennial screeners
 
