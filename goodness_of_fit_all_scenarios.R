@@ -961,6 +961,6 @@ Goodness_of_fit1 = function(Nsim, M, p, Nsubj, P, P_prime, scen, d="strong"){
 
 
 
-Goodness_of_fit (10, 10, 0.2, 50000, P, P_prime )
+Goodness_of_fit (5000, 10, 0.2, 50000, P, P_prime )
 
 
